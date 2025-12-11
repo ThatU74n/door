@@ -7,8 +7,13 @@ terraform {
   }
 }
 
+variable "aws_token" {
+  type = string 
+}
+
 provider "aws" {
   region = "ap-southeast-1"
+  token = var.aws_token
 }
 
 resource "aws_security_group" "door-sg" {
