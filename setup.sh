@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# Run by cloud-init
+set -e
+
 function update() {
-  sudo apt-get update
-  sudo apt-get install -y git curl
+  apt-get update
+  apt-get install -y git curl
 }
 
 function system_config() {
@@ -11,7 +14,7 @@ function system_config() {
 
 function tailscale_config() {
   curl -fsSL https://tailscale.com/install.sh | sh
-  sudo tailscale up --authkey "${tailscale_auth_key}" --advertise-exit-node
+  tailscale up --authkey "${tailscale_auth_key}" --advertise-exit-node
 }
 
 function main() {

@@ -1,3 +1,3 @@
 #!/bin/bash
 
-terraform destroy -auto-approve
+terraform destroy -var-file=example.tfvars -auto-approve

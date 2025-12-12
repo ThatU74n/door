@@ -1,4 +1,4 @@
 #!/bin/bash
 
 terraform init
-terraform apply -auto-approve
+terraform apply -var-file=example.tfvars -auto-approve

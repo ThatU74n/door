@@ -1,23 +1,13 @@
 terraform {
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+      source = "hashicorp/aws"
     }
   }
 }
 
-variable "aws_token" {
-  type = string 
-}
-
-provider "aws" {
-  region = "ap-southeast-1"
-  token = var.aws_token
-}
-
 resource "aws_security_group" "door-sg" {
-  name        = "exit-node-sg"
+  name        = "door-node-sg"
   
   ingress {
     from_port   = 22
@@ -35,15 +25,16 @@ resource "aws_security_group" "door-sg" {
 }
 
 resource "aws_key_pair" "door-key" {
-  key_name = "exit-key"
-  public_key = file("~/.ssh/id_ed25519.pub")
+  key_name = "door-key"
+  public_key = file(pathexpand("~/.ssh/id_ed25519.pub"))
 }
 
 resource "aws_instance" "door" {
+
   ami           = "ami-0818ff4e4d072e0ec"
   instance_type = "t2.micro"
 
-  key_name = "exit-key"
+  key_name = "door-key"
   vpc_security_group_ids = [aws_security_group.door-sg.id]
 
   instance_market_options {
@@ -55,10 +46,9 @@ resource "aws_instance" "door" {
     }
   }
 
-  user_data = templatefile("setup.sh", {
+  user_data = templatefile("${path.root}/setup.sh", {
     tailscale_auth_key = var.tailscale_auth_key
   })
-
 
   tags = {
     Name = "door"
